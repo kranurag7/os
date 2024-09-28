@@ -1,0 +1,39 @@
+package:
+  name: dart
+  version: 3.6.0-294.0.dev
+  epoch: 0
+  description: The Dart SDK, including the Dart VM, dart2js, pub, and the Dart Analyzer
+  copyright:
+    - license: BSD-3-Clause
+
+environment:
+  contents:
+    packages:
+      - git
+      - python3
+      - curl
+      - xz
+
+pipeline:
+  - runs: |
+      mkdir -p ${{targets.destdir}}/usr/lib/
+      cd /home
+      git clone --depth=1 https://chromium.googlesource.com/chromium/tools/depot_tools.git
+      export PATH=$PATH:/home/depot_tools
+      mkdir -p /home/dart-sdk
+      cd /home/dart-sdk
+      cat > .gclient <<EOF
+      "custom_vars": {
+        "download_emscripten": True,
+      },
+      EOF
+      fetch dart
+      cd sdk
+      if "${{build.arch}}" == "x86_64"; then
+        ./tools/build.py --mode release --arch x64 create_sdk
+        mv out/ReleaseX64/dart-sdk ${{targets.destdir}}/usr/lib/dart
+      else
+        ./tools/build.py --mode release --arch arm64 create_sdk
+        mv out/ReleaseARM64/dart-sdk ${{targets.destdir}}/usr/lib/dart
+      fi
+      ln -sf /usr/lib/dart/bin/dart ${{targets.destdir}}/usr/bin/dart
