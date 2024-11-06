@@ -88,7 +88,7 @@ subpackages:
 
           ./dev/change-scala-version.sh $SCALA_VERSION
 
-          ./dev/make-distribution.sh --name custom-spark --pip -Psparkr -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes -Pscala-$SCALA_VERSION
+          ./dev/make-distribution.sh --name custom-spark --pip -Psparkr -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes -Pspark-ganglia-lgpl -Pkinesis-asl -Phadoop-cloud -Pjvm-profiler -Pscala-$SCALA_VERSION
 
           patch dist/bin/load-spark-env.sh load-spark-env.sh.diff
           patch dist/sbin/spark-daemon.sh spark-daemon.sh.diff
